@@ -18,5 +18,4 @@ async function readFilesInDir(dirName) {
     }
 } // readFilesInDir(dirName);
 
-
-let a = readFilesInDir(dirName);
+readFilesInDir(dirName);
