@@ -17,26 +17,28 @@ console.log('dirName:', dirName);
 // }
 
 async function readFilesInDir(dirName) {
-    let filesArr = [];
-    let fileSize;
+    // let filesArr = [];
+    //let fileSize;
     try {
         const files = await fs.promises.readdir(dirName, { withFileTypes: true });
         //console.log('files:', files);
         for (let file of files) {
             // fileSize = getFileSize(file);
-            fileSize = await fs.promises.stat(path.join(dirName, file.name)).size;
+            const fileSize = await fs.promises.stat(path.join(dirName, file.name));
+            // console.log('fileSize:', fileSize);
 
             if (file.isFile()) {
                 // fileSize = getFileSize(file);
-                console.log('fileSize:', fileSize);
-                filesArr.push(`${file.name} - ${path.extname(file.name)} - ${fileSize} bytes `);
+                //console.log('fileSize:', fileSize);
+                // filesArr.push(`${file.name} - ${path.extname(file.name)} - ${fileSize.size} bytes `);
+                console.log(`${file.name} - ${path.extname(file.name)} - ${fileSize.size} bytes `);
             }
         }
         // console.log(file.isFile());
     } catch (err) {
         console.error(err);
     }
-    return filesArr;
+    // return filesArr;
 } // readFilesInDir(dirName);
 
 async function getFileSize(file) { 
@@ -53,5 +55,5 @@ async function getFileSize(file) {
 
 //readFilesInDir(dirName).then((f) => {console.log('files:', f);});
 let a = readFilesInDir(dirName)
-a.then((f) => {console.log('files:', f)});
+// a.then((f) => {console.log('files:', f)});
 
