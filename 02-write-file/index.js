@@ -10,6 +10,7 @@ const fileInDir = path.join(__dirname, fileName);
 stdout.write('Hello {username} !\n');
 stdout.write('You can type something in terminal and it will be added into the text.txt file\n');
 stdout.write('after you push the Enter button!\n');
+stdout.write('Push Ctrl-C or type out `exit` in terminal for script stop\n');
 // greeting - finish ----------------------------------------------------------------------------------------------------
 
 // create file stream ----------------------------------------------------------------------------------------------------
@@ -17,7 +18,7 @@ let writeToFileStream = fs.createWriteStream(fileInDir);
 
 // write to file stream -------------------------------------------------------------------------------------------------------
 stdin.on('data', data => {
-    let onExit = data.toString().trim() === 'exit'; //bool flag: TRUE if user typed 'exit' in console
+    let onExit = data.toString().trim() === 'exit'; // bool flag: TRUE if user typed 'exit' in console
     if (onExit) {
         CntrlCHandler(); // if user typed 'exit' in console, terminate the seance and exit the program
     } else {
@@ -31,5 +32,5 @@ function CntrlCHandler() {
     process.exit();
   }
 
-process.on('exit', () => stdout.write('Удачи {username} в изучении Node.js!'));
+process.on('exit', () => stdout.write('Good lack {username} with Node.js!'));
 process.on('SIGINT', () => { CntrlCHandler() }); // handle Ctrl+C
