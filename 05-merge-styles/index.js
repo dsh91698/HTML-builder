@@ -10,6 +10,8 @@ const cssFileName = 'bundle.css';
 mergeCSSFiles(cssFolder, htmlFolder, cssFileName); // main function call
 
 async function mergeCSSFiles(cssFolder, htmlFolder, cssFileName) {
+    console.log('# - Creating bundle.css file...');
+    console.log('# --- DONE!');
     try {
         let cssContent = '/* -=3=- css bundle file */\n';
         await fs.promises.writeFile(path.join(htmlFolder, cssFileName), cssContent);
@@ -17,13 +19,14 @@ async function mergeCSSFiles(cssFolder, htmlFolder, cssFileName) {
         const cssFiles = await fs.promises.readdir(cssFolder, { withFileTypes: true });
             for (let file of cssFiles) {
                 if (file.isFile() && path.extname(file.name) === '.css') {
-                    console.log(`${file.name} - ${path.extname(file.name)}`);
+                    console.log(`# - Adding to bundle.css ${file.name} file`);
                     await createBundleCSS(cssFolder, htmlFolder, cssFileName, file.name);
                 }
             }
     } catch (error) { 
         console.log('mergeCSSFiles ERROR:\n', error);
     }
+    console.log('# --- Merging DONE!');
 }
 
 async function createBundleCSS(cssFolder, htmlFolder, cssFileName, cssContentFile) {
