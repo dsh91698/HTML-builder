@@ -35,16 +35,38 @@ async function createDistFolder(distPath, assetsPath) {
 // ------ create index.html file - START ----- //
 createIndexHtml(htmlFilePath);
 
-async function createIndexHtml(htmlFilePath) { 
+async function createIndexHtml(htmlFilePath) {
     console.log('# - Creating index.html file...');
     try {
         let textStream = await fs.promises.readFile(path.join(__dirname, 'template.html'), 'utf8');
-        await fs.promises.writeFile(htmlFilePath, textStream);
+        
+        let articles = await fs.promises.readFile(path.join(componetSrc, 'articles.html'), 'utf8');
+        // findAndReplace(textStream, '{{articles}}', articles);
+        textStream = textStream.replace('{{articles}}', articles);
+        
+        let footer = await fs.promises.readFile(path.join(componetSrc, 'footer.html'), 'utf8');
+        textStream = textStream.replace('{{footer}}', footer);
+
+        let header = await fs.promises.readFile(path.join(componetSrc, 'header.html'), 'utf8');
+        textStream = textStream.replace('{{header}}', header);
+        
+        await fs.promises.writeFile(htmlFilePath, textStream); // write index.html file after replacement
+
+        async function findAndReplace(textStream, find, replace) {
+            try {
+                textStream = textStream.replace(find, replace);
+            } catch (error) {
+                console.log('findAndReplace ERROR:\n', error);
+            }
+        }
+
+
     } catch (error) {
         console.log('createIndexHtml ERROR:\n', error);
     }
     console.log('# --- DONE!');
 }
+
 // ------ create index.html file - FINISH ----- //
 
 
