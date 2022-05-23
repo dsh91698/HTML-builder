@@ -8,9 +8,15 @@ const prjFolderName = 'project-dist'
 // const distFolderPath = path.join(__dirname, './', prjFolderName)
 const distFolderPath = path.join(__dirname, prjFolderName)
 const htmlFilePath = path.join(distFolderPath, 'index.html')
+//---------
 const cssFilePath = path.join(distFolderPath, 'style.css')
+const cssSrc = path.join(__dirname, 'styles')
+//-----------
 const assetsPath = path.join(distFolderPath, 'assets')
 const assertsSrc = path.join(__dirname, 'assets');
+//-----------
+const componetSrc = path.join(__dirname, 'components');
+//-----------
 
 // ---- create dist folder - START ----- //
 createDistFolder(distFolderPath, assetsPath)
@@ -26,9 +32,24 @@ async function createDistFolder(distPath, assetsPath) {
 }
 // -------- create dist folder - FINISH ----- //
 
+// ------ create index.html file - START ----- //
+createIndexHtml(htmlFilePath);
+
+async function createIndexHtml(htmlFilePath) { 
+    console.log('# - Creating index.html file...');
+    try {
+        let textStream = await fs.promises.readFile(path.join(__dirname, 'template.html'), 'utf8');
+        await fs.promises.writeFile(htmlFilePath, textStream);
+    } catch (error) {
+        console.log('createIndexHtml ERROR:\n', error);
+    }
+    console.log('# --- DONE!');
+}
+// ------ create index.html file - FINISH ----- //
+
+
 // ------ copy assets folder to dist folder - START ----- //
 copyDir(assertsSrc, assetsPath)
-// ------ copy assets folder to dist folder - FINISH ----- //
 
 async function copyDir(src, dest) {
     try {
@@ -70,4 +91,39 @@ async function onFolderExists(dirName) {
         // The check is notOK, folder does not exists
     }
 }
+// ------ copy assets folder to dist folder - FINISH ----- //
 
+// ------ CSS bundle making - START ----- //
+mergeCSSFiles(cssFilePath, cssSrc)
+
+async function mergeCSSFiles(cssFilePath, cssSrc) {
+    console.log('# - Creating bundle.css file...');
+    console.log('# --- DONE!');
+    try {
+        let cssContent = '/* -=0=- css bundle file */\n';
+        await fs.promises.writeFile(cssFilePath, cssContent);
+
+        const cssFiles = await fs.promises.readdir(cssSrc, { withFileTypes: true });
+            for (let file of cssFiles) {
+                if (file.isFile() && path.extname(file.name) === '.css') {
+                    console.log(`# - Adding to style.css ${file.name} file`);
+                    await createBundleCSS(cssFilePath, cssSrc, file.name);//
+                }
+            }
+    } catch (error) { 
+        console.log('mergeCSSFiles ERROR:\n', error);
+    }
+    console.log('# --- Merging DONE!');
+}
+
+async function createBundleCSS(cssFilePath, cssSrc, cssContentFile) {
+    try {
+        let textStream = await fs.promises.readFile(path.join(cssSrc,cssContentFile), 'utf8');
+        await fs.promises.appendFile(cssFilePath, textStream);
+    } catch (error) {
+        console.log('createBundleCSS ERROR:\n', error);
+    }
+}
+
+
+// ---- CSS bundle making  - FINISH ----- //
